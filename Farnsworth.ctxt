@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.params=
+comment0.target=Farnsworth()
+comment1.params=team1\ team2
+comment1.target=void\ compareTeams(Team,\ Team)
+comment2.params=team1\ team2
+comment2.target=java.lang.String\ predictWinner(Team,\ Team)
+comment3.params=
+comment3.target=void\ weightShuffle()
+comment4.params=
+comment4.target=void\ saveWeights()
+comment5.params=game
+comment5.target=void\ makeMadness(Game)
+numComments=6

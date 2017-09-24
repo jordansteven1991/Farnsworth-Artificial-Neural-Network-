@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.params=value
+comment0.target=Weight(double)
+comment1.params=
+comment1.target=Weight()
+comment2.params=
+comment2.target=double\ getWeight()
+comment3.params=newValue
+comment3.target=void\ setWeight(double)
+comment4.params=
+comment4.target=java.lang.String\ toString()
+numComments=5

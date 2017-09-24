@@ -1,0 +1,15 @@
+#BlueJ class context
+comment0.params=team1\ team2\ winner
+comment0.target=Game(Team,\ Team,\ java.lang.String)
+comment0.text=\r\n\ Constructor\ for\ objects\ of\ class\ Game\r\n
+comment1.params=team1\ team2
+comment1.target=Game(Team,\ Team)
+comment2.params=
+comment2.target=Team\ getTeam1()
+comment3.params=
+comment3.target=Team\ getTeam2()
+comment4.params=
+comment4.target=java.lang.String\ getWinner()
+comment5.params=winner
+comment5.target=void\ setWinner(java.lang.String)
+numComments=6
