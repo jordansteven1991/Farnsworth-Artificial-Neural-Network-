@@ -11,9 +11,9 @@ public class Farnsworth
     private Brain brain2;
     private Brain brain3;
     private Brain brain4;
-    private File file1 = new File("C:/Users/The Ledgend/Desktop/Farnsworth 2.0/weights1.txt");
-    private File file2 = new File("C:/Users/The Ledgend/Desktop/Farnsworth 2.0/weights2.txt");
-    private File file3 = new File("C:/Users/The Ledgend/Desktop/Farnsworth 2.0/weights3.txt");
+    private File file1 = new File("weights1.txt");
+    private File file2 = new File("weights2.txt");
+    private File file3 = new File("weights3.txt");
     
     private int[]madnessFactor = new int[64];
   
