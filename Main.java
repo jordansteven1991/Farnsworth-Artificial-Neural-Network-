@@ -232,24 +232,6 @@ public class Main
                 Team team1 = temp.getTeam1();
                 Team team2 = temp.getTeam2();
                 
-                
-                
-                farnsworth.compareTeams(team1,team2);
-//                 if(team1.getTotalScore() > team2.getTotalScore())
-//                 {
-//                     double x = team2.getTotalScore();
-//                     Random rand = new Random();
-//                     x = x + rand.nextInt(100);
-//                     team2.setTotalScore(x);
-//                 }
-//                 else
-//                 {
-//                     double x = team1.getTotalScore();
-//                     Random rand = new Random();
-//                     x = x + rand.nextInt(100);
-//                     team1.setTotalScore(x);
-//                 }
-                    
                 String winner = farnsworth.predictWinner(team1,team2);
                 String name1 = team1.toString();
                 String name2 = team2.toString();
@@ -262,18 +244,12 @@ public class Main
                 
                 System.out.println(winner);
                 System.out.println("\n");
-                //farnsworth.saveWeights();
                 
-//                 if(winner == temp.getWinner())
-//                 {
-//                     gamesRight++;
-//                 }
                 
                 
             
             }
         
-       // System.out.println("Games right: " + gamesRight + "\n");
        
         
     }

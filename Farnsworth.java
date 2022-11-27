@@ -3,6 +3,8 @@ import java.io.*;
 /**
  * @Steven Jordan
  * @02/01/2015
+ * 
+ * cleanup started 11/26/2022
  */
 public class Farnsworth
 {
@@ -10,12 +12,11 @@ public class Farnsworth
     private Brain brain1;
     private Brain brain2;
     private Brain brain3;
-    private Brain brain4;
+  
     private File file1 = new File("weights1.txt");
     private File file2 = new File("weights2.txt");
     private File file3 = new File("weights3.txt");
-    
-    private int[]madnessFactor = new int[64];
+ 
   
     //private String winner = "You lose!  You get nothing!";
 
@@ -115,6 +116,7 @@ public class Farnsworth
     
     public String predictWinner(Team team1, Team team2)
     {
+    	compareTeams(team1, team2);
         if(team1.getTotalScore() > team2.getTotalScore())
         {
             return team1.toString();
@@ -147,8 +149,7 @@ public class Farnsworth
         
         double ppg1 = team1.getPpg();
         double ppg2 = team2.getPpg();
-        double luck1 = team1.getLuck();
-        double luck2 = team2.getLuck();
+        
         
         Random rand1 = new Random();
         Random rand2 = new Random();

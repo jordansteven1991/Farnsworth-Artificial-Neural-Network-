@@ -4,6 +4,7 @@
  * 
  * @author (your name) 
  * @version (a version number or a date)
+ * need to get rid of this later
  */
 public class MyStack
 {
