@@ -1,3 +1,4 @@
+package domain;
 /**
  * @Steven Jordan
  * @01/24/15
@@ -12,7 +13,7 @@ public class Team
     private double fg;                     //Field goal percentage
     private double pyth;                   //Expected winning percentage
     private double rank;                      //Ap rank
-    private double luck;                   //Actual winning percentage - expected one... Do you feel lucky, punk?
+	private double luck;                   //Actual winning percentage - expected one... Do you feel lucky, punk?
     private double sos;                    //Strength of Schedule
     private String name;                   //Team name
     private String conference;
@@ -156,6 +157,63 @@ public class Team
     {
         return bracket;
     }
+    
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPpg(double ppg) {
+		this.ppg = ppg;
+	}
+
+	public void setFt(double ft) {
+		this.ft = ft;
+	}
+
+	public void setAdjO(double adjO) {
+		AdjO = adjO;
+	}
+
+	public void setAdjD(double adjD) {
+		AdjD = adjD;
+	}
+
+	public void setFg(double fg) {
+		this.fg = fg;
+	}
+
+	public void setPyth(double pyth) {
+		this.pyth = pyth;
+	}
+
+	public void setRank(double rank) {
+		this.rank = rank;
+	}
+
+	public void setLuck(double luck) {
+		this.luck = luck;
+	}
+
+	public void setSos(double sos) {
+		this.sos = sos;
+	}
+
+	public void setConference(String conference) {
+		this.conference = conference;
+	}
+
+	public void setBracket(String bracket) {
+		this.bracket = bracket;
+	}
+
+	public void setTp(double tp) {
+		this.tp = tp;
+	}
+
     
     
    

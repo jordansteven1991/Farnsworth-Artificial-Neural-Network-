@@ -1,4 +1,4 @@
-
+package domain;
 /**
  * @Steven Jordan
  * @02/02/2015

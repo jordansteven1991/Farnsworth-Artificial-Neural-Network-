@@ -1,4 +1,4 @@
-
+package domain;
 /**
  * Write a description of class MyStack here.
  * 

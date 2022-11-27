@@ -1,6 +1,10 @@
-
+package run;
 import java.io.*;
 import java.util.*;
+
+import domain.Game;
+import domain.Team;
+import core.Farnsworth;
 /**
  * Write a description of class Trainer here.
  * 

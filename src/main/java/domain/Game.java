@@ -1,3 +1,5 @@
+package domain;
+
 /**
  * @Steven Jordan
  * @01/24/15
