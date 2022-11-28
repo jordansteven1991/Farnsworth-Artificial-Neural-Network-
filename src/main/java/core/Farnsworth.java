@@ -191,7 +191,7 @@ public class Farnsworth {
 				String baseUrl = "https://www.cbssports.com/college-basketball/teams/%s/%s/stats/";
 				String url = "";
 				for (CbsLookup value : CbsLookup.values()) {
-					if (value.getKey().equals(team.getName())) {
+					if (value.getKey().toLowerCase().equals(team.getName().toLowerCase())) {
 						url = String.format(baseUrl, value.name(), value.getValue());
 						break;
 					}
