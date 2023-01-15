@@ -28,6 +28,9 @@ public class Trainer {
 			//we have not seen this team before
 			if(!pairedTeams.containsKey(currTeam)) {
 				Team currOpponent = farnsworth.findOpponent(currTeam);
+				if(currOpponent == null) {
+					pairedTeams.put(currTeam, new Team());
+				}
 				//we have not seen this opponent already either
 				if(!pairedTeams.containsKey(currOpponent)) {
 					pairedTeams.put(currTeam, currOpponent);

@@ -19,6 +19,9 @@ import domain.MyStack;
 import util.CbsLookup;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @Steven Jordan @02/01/2015
@@ -34,6 +37,7 @@ public class Farnsworth {
 	private File file1 = new File("weights1.txt");
 	private File file2 = new File("weights2.txt");
 	private File file3 = new File("weights3.txt");
+	private Map<String, Team> statsUrlToTeam;
 
 	// private String winner = "You lose! You get nothing!";
 
@@ -42,6 +46,8 @@ public class Farnsworth {
 		brain2 = new Brain(file2);
 		brain3 = new Brain(file3);
 		// brain4 = new Brain();
+		
+		statsUrlToTeam = new HashMap<>();
 
 	}
 
@@ -164,6 +170,31 @@ public class Farnsworth {
 
 	public List<Team> getTeams() throws IOException, UnirestException {
 		Unirest.setTimeouts(0, 0);
+
+		// prepare cbsLookup
+		HttpResponse<String> cbsTeams = Unirest.get("https://www.cbssports.com/college-basketball/teams/").asString();
+		Document teamsDoc = Jsoup.parse(cbsTeams.getBody());
+		Elements teamTags = teamsDoc.getElementsByClass("TeamName");
+		Map<String, Map<String, String>> cbsLookup = new HashMap<>();
+		for (Element currentTag : teamTags) {
+			String[] splitStrings = currentTag.html().split("class");
+			String teamUrl = splitStrings[0];
+			String teamUrlFormatted = teamUrl.substring(9, teamUrl.length() - 2);
+			String teamName = splitStrings[1].substring(4, splitStrings[1].length() - 4);
+			String key = teamName.substring(0, 1);
+			Map<String, String> teamsThatStartWithKey;
+			if (cbsLookup.containsKey(key)) {
+				teamsThatStartWithKey = cbsLookup.get(key);
+			} else {
+				teamsThatStartWithKey = new HashMap<>();
+			}
+
+			teamsThatStartWithKey.put(teamName, teamUrlFormatted);
+			cbsLookup.put(key, teamsThatStartWithKey);
+
+		}
+
+		// get ken pom data
 		HttpResponse<String> response = Unirest.get("http://kenpom.com").asString();
 		Document doc = Jsoup.parse(response.getBody());
 		Element table = doc.getElementById("ratings-table");
@@ -186,32 +217,72 @@ public class Farnsworth {
 				team.setAdjD(Double.parseDouble(adjD));
 				String luck = rawTeamFields.get(11).html().replace("+", "");
 				team.setLuck(Double.parseDouble(luck));
+				
+				try {
+					// add cbs sports stats
+					String baseUrl = "https://www.cbssports.com%s";
+					String cbsKey = teamName.substring(0, 1);
+					String url = "";
+					String teamNameFormatted = formatTeamString(teamName);
+					Map<String, String> teamsThatStartWithKey = cbsLookup.get(cbsKey);
+					int lengthOfBestMatch = 0;
+					String bestMatch = "";
+					for (String teamKey : teamsThatStartWithKey.keySet()) {
+						if (teamKey.toLowerCase().equals(teamNameFormatted)) {
+							url = String.format(baseUrl, teamsThatStartWithKey.get(teamKey)) + "stats";
+							break;
+						}
+						String teamKeyFormatted = formatTeamString(teamKey);
+						String teamUrlFormatted = formatTeamString(teamsThatStartWithKey.get(teamKey));
+						if (teamKeyFormatted.contains(teamNameFormatted) || teamUrlFormatted.contains(teamNameFormatted)) {
+							if (lengthOfBestMatch == 0 || teamKey.length() < lengthOfBestMatch) {
+								// when no direct match, find closest match
+								lengthOfBestMatch = teamKey.length();
+								bestMatch = teamsThatStartWithKey.get(teamKey);
+							}
 
-				// add cbs sports stats
-				String baseUrl = "https://www.cbssports.com/college-basketball/teams/%s/%s/stats/";
-				String url = "";
-				for (CbsLookup value : CbsLookup.values()) {
-					if (value.getKey().toLowerCase().equals(team.getName().toLowerCase())) {
-						url = String.format(baseUrl, value.name(), value.getValue());
-						break;
+						}
 					}
+					if (url.length() == 0) {
+						if(lengthOfBestMatch > 0) {
+							url = String.format(baseUrl, bestMatch) + "stats";
+						} else {
+							//when all else fails use my enum to find entries manually
+							for(CbsLookup cbsLookupEnum : CbsLookup.values()) {
+								if(cbsLookupEnum.getKey().equals(teamNameFormatted)) {
+									url = String.format(baseUrl, cbsLookupEnum.getValue()) + "stats";
+								}
+							}
+						}
+						
+					}
+					System.out.println(teamNameFormatted);
+					System.out.println(url);
+					team.setStatsUrl(url);
+					
+					HttpResponse<String> cbsResponse = Unirest.get(url).asString();
+					Document doc2 = Jsoup.parse(cbsResponse.getBody());
+
+					Element teamStats = doc2
+							.getElementsByClass("TableBase-bodyTr TableBase-bodyTr--total TableBase-bodyTr--totalFirst")
+							.get(0);
+					Elements teamStatFields = teamStats.getElementsByTag("td");
+					String ppg = teamStatFields.get(4).html();
+					String fg = teamStatFields.get(7).html();
+					String tp = teamStatFields.get(10).html();
+					String ft = teamStatFields.get(13).html();
+					team.setPpg(Double.parseDouble(ppg));
+					team.setFg(Double.parseDouble(fg));
+					team.setTp(Double.parseDouble(tp));
+					team.setFt(Double.parseDouble(ft));
+					
+					statsUrlToTeam.put(url, team);
+				} catch (Throwable thrown) {
+					System.out.println("Could not find cbs stats");
 				}
 
-				HttpResponse<String> cbsResponse = Unirest.get(url).asString();
-				Document doc2 = Jsoup.parse(cbsResponse.getBody());
+				
 
-				Element teamStats = doc2
-						.getElementsByClass("TableBase-bodyTr TableBase-bodyTr--total TableBase-bodyTr--totalFirst")
-						.get(0);
-				Elements teamStatFields = teamStats.getElementsByTag("td");
-				String ppg = teamStatFields.get(4).html();
-				String fg = teamStatFields.get(7).html();
-				String tp = teamStatFields.get(10).html();
-				String ft = teamStatFields.get(13).html();
-				team.setPpg(Double.parseDouble(ppg));
-				team.setFg(Double.parseDouble(fg));
-				team.setTp(Double.parseDouble(tp));
-				team.setFt(Double.parseDouble(ft));
 				teams.add(team);
 			}
 		}
@@ -219,9 +290,39 @@ public class Farnsworth {
 		return teams;
 	}
 
-	public Team findOpponent(Team currTeam) {
-		// TODO Auto-generated method stub
-		return null;
+	private String formatTeamString(String teamName) {
+		return teamName.replace(".", "").replace("'", "").replace("(", "").replace(")", "").toLowerCase();
+	}
+
+	public Team findOpponent(Team currTeam) throws UnirestException {
+		//defaults to BYE
+		Team opponent = new Team();
+		try {
+			String scheduleUrl = currTeam.getStatsUrl().replace("stats", "schedule");
+			HttpResponse<String> cbsResponse = Unirest.get(scheduleUrl).asString();
+			Document doc = Jsoup.parse(cbsResponse.getBody());
+			Elements tableRows = doc.getElementsByClass("TableBase-bodyTr");
+			
+			for(Element row : tableRows) {
+				String gameDate = row.getElementsByClass("CellGameDate").get(0).html();
+				LocalDate gameLd = LocalDate.parse(gameDate, DateTimeFormatter.ofPattern("MMM d, yyyy"));
+				LocalDate todayLd = LocalDate.now();
+				if(gameLd.isAfter(todayLd)) {
+					//this is the next game
+					String teamUrl = row.getElementsByClass("TeamLogo  TeamLogo--small").get(0).html();
+					teamUrl = "https://cbssports.com" + teamUrl.replace("<a href=\"", "").split("/\">")[0] + "/stats";
+					System.out.println("Opponent url: " + teamUrl);
+					opponent = statsUrlToTeam.get(teamUrl);
+					break;
+				}
+				
+			}
+		}catch(Exception ex) {
+			System.out.println("Error: " + ex.getMessage());
+			System.out.println("Setting opponent to BYE for " + currTeam.getName());
+		}
+		
+		return opponent;
 	}
 
 }

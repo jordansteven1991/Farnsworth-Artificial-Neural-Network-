@@ -1,8 +1,12 @@
 package domain;
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 /**
  * @Steven Jordan
  * @01/24/15
  */
+@JsonPropertyOrder({"name", "statsUrl", "ppg", "ft", "AdjO", "AdjD", "fg", "pyth", "rank", "luck", "sos", "tp", "conference", "bracket", "totalScore"})
 public class Team
 {
    
@@ -20,9 +24,11 @@ public class Team
     private String bracket;
     private double totalScore;            //For calculating best overall team
     private double tp;                    //Three point percentage
+    private String statsUrl;
     
 
-    /**
+
+	/**
      * Constructor for objects of class Team
      */
     
@@ -36,7 +42,7 @@ public class Team
         pyth = 0;
         rank = 0;
         luck = 0;
-        name = "Test";
+        name = "BYE";
         bracket = "Test";
         totalScore = 0;
         sos = 0;
@@ -212,6 +218,14 @@ public class Team
 
 	public void setTp(double tp) {
 		this.tp = tp;
+	}
+	
+	public String getStatsUrl() {
+		return statsUrl;
+	}
+
+	public void setStatsUrl(String statsUrl) {
+		this.statsUrl = statsUrl;
 	}
 
     
