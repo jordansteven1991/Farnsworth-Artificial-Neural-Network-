@@ -1,5 +1,7 @@
 package domain;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
@@ -7,10 +9,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * @01/24/15
  */
 @JsonPropertyOrder({"name", "statsUrl", "ppg", "ft", "AdjO", "AdjD", "fg", "pyth", "rank", "luck", "sos", "tp", "conference", "bracket", "totalScore"})
-public class Team
+public class Team implements Serializable
 {
    
-    private double ppg;                      //Points per game
+    private static final long serialVersionUID = 7885660292799095583L;
+	private double ppg;                      //Points per game
     private double ft;                       //Free throw percentage
     private double AdjO;                    //Adjusted Offense- points scored per 100 possesions 
     private double AdjD;                    //Adjusted defense- points allowed per 100 possesions

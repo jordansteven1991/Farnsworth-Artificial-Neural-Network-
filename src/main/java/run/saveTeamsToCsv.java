@@ -30,49 +30,29 @@ public class saveTeamsToCsv {
 
 		for (Team team : teams) {
 			Team opponent = farnsworth.findOpponent(team);
-			if(!teamsProcessed.containsKey(opponent)) {
+			if (!teamsProcessed.containsKey(opponent)) {
 				csvTeams.add(team);
 				csvTeams.add(opponent);
 				teamsProcessed.put(team, opponent);
 			}
-			
+
 		}
-		
+
 		// set correct directory as output
-        File csvOutputFile = new File("C:/Users/jorda/Documents/TeamsToPlay.csv");
-        
-        csvTeams.add(new Team());
+		File csvOutputFile = new File("C:/Users/jorda/Documents/TeamsToPlay.csv");
 
-        
+		CsvMapper mapper = new CsvMapper();
+		mapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, false);
+		CsvSchema schema = CsvSchema.builder().setUseHeader(true).addColumn("name").addColumn("statsUrl")
+				.addColumn("ppg").addColumn("ft").addColumn("adjO").addColumn("adjD").addColumn("fg").addColumn("pyth")
+				.addColumn("rank").addColumn("luck").addColumn("sos").addColumn("tp").addColumn("conference")
+				.addColumn("bracket").addColumn("totalScore").build();
 
-        CsvMapper mapper = new CsvMapper();
-        mapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, true);
-        CsvSchema schema = CsvSchema.builder().setUseHeader(true)
-                .addColumn("name")
-                .addColumn("statsUrl")
-                .addColumn("ppg")
-                .addColumn("ft")
-                .addColumn("AdjO")
-                .addColumn("AdjD")
-                .addColumn("fg")
-                .addColumn("pyth")
-                .addColumn("rank")
-                .addColumn("luck")
-                .addColumn("sos")
-                .addColumn("tp")
-                .addColumn("conference")
-                .addColumn("bracket")
-                .addColumn("totalScore")
-                .build();
+		ObjectWriter writer = mapper.writerFor(Team.class).with(schema);
 
-        ObjectWriter writer = mapper.writerFor(Team.class).with(schema);
+		writer.writeValues(csvOutputFile).writeAll(csvTeams);
 
-        writer.writeValues(csvOutputFile).writeAll(csvTeams);
-
-        System.out.println("Users saved to csv file under path: " + csvOutputFile.getAbsolutePath());
-
-		
-		
+		System.out.println("Teams to play saved to csv file under path: " + csvOutputFile.getAbsolutePath());
 
 	}
 

@@ -46,7 +46,7 @@ public class Farnsworth {
 		brain2 = new Brain(file2);
 		brain3 = new Brain(file3);
 		// brain4 = new Brain();
-		
+
 		statsUrlToTeam = new HashMap<>();
 
 	}
@@ -217,7 +217,7 @@ public class Farnsworth {
 				team.setAdjD(Double.parseDouble(adjD));
 				String luck = rawTeamFields.get(11).html().replace("+", "");
 				team.setLuck(Double.parseDouble(luck));
-				
+
 				try {
 					// add cbs sports stats
 					String baseUrl = "https://www.cbssports.com%s";
@@ -234,7 +234,8 @@ public class Farnsworth {
 						}
 						String teamKeyFormatted = formatTeamString(teamKey);
 						String teamUrlFormatted = formatTeamString(teamsThatStartWithKey.get(teamKey));
-						if (teamKeyFormatted.contains(teamNameFormatted) || teamUrlFormatted.contains(teamNameFormatted)) {
+						if (teamKeyFormatted.contains(teamNameFormatted)
+								|| teamUrlFormatted.contains(teamNameFormatted)) {
 							if (lengthOfBestMatch == 0 || teamKey.length() < lengthOfBestMatch) {
 								// when no direct match, find closest match
 								lengthOfBestMatch = teamKey.length();
@@ -244,22 +245,24 @@ public class Farnsworth {
 						}
 					}
 					if (url.length() == 0) {
-						if(lengthOfBestMatch > 0) {
+						if (lengthOfBestMatch > 0) {
 							url = String.format(baseUrl, bestMatch) + "stats";
 						} else {
-							//when all else fails use my enum to find entries manually
-							for(CbsLookup cbsLookupEnum : CbsLookup.values()) {
-								if(cbsLookupEnum.getKey().equals(teamNameFormatted)) {
+							// when all else fails use my enum to find entries manually
+							for (CbsLookup cbsLookupEnum : CbsLookup.values()) {
+								if (cbsLookupEnum.getKey().equals(teamNameFormatted)) {
 									url = String.format(baseUrl, cbsLookupEnum.getValue()) + "stats";
 								}
 							}
 						}
-						
+
 					}
 					System.out.println(teamNameFormatted);
+					//trim whitespace
+					url = url.replace(" ", "");
 					System.out.println(url);
 					team.setStatsUrl(url);
-					
+
 					HttpResponse<String> cbsResponse = Unirest.get(url).asString();
 					Document doc2 = Jsoup.parse(cbsResponse.getBody());
 
@@ -267,6 +270,7 @@ public class Farnsworth {
 							.getElementsByClass("TableBase-bodyTr TableBase-bodyTr--total TableBase-bodyTr--totalFirst")
 							.get(0);
 					Elements teamStatFields = teamStats.getElementsByTag("td");
+
 					String ppg = teamStatFields.get(4).html();
 					String fg = teamStatFields.get(7).html();
 					String tp = teamStatFields.get(10).html();
@@ -275,16 +279,17 @@ public class Farnsworth {
 					team.setFg(Double.parseDouble(fg));
 					team.setTp(Double.parseDouble(tp));
 					team.setFt(Double.parseDouble(ft));
-					
+
 					statsUrlToTeam.put(url, team);
+
 				} catch (Throwable thrown) {
 					System.out.println("Could not find cbs stats");
 				}
 
-				
-
 				teams.add(team);
+
 			}
+
 		}
 
 		return teams;
@@ -295,33 +300,36 @@ public class Farnsworth {
 	}
 
 	public Team findOpponent(Team currTeam) throws UnirestException {
-		//defaults to BYE
+		// defaults to BYE
 		Team opponent = new Team();
 		try {
 			String scheduleUrl = currTeam.getStatsUrl().replace("stats", "schedule");
 			HttpResponse<String> cbsResponse = Unirest.get(scheduleUrl).asString();
 			Document doc = Jsoup.parse(cbsResponse.getBody());
 			Elements tableRows = doc.getElementsByClass("TableBase-bodyTr");
-			
-			for(Element row : tableRows) {
+
+			for (Element row : tableRows) {
 				String gameDate = row.getElementsByClass("CellGameDate").get(0).html();
 				LocalDate gameLd = LocalDate.parse(gameDate, DateTimeFormatter.ofPattern("MMM d, yyyy"));
 				LocalDate todayLd = LocalDate.now();
-				if(gameLd.isAfter(todayLd)) {
-					//this is the next game
+				if (gameLd.isAfter(todayLd)) {
+					// this is the next game
 					String teamUrl = row.getElementsByClass("TeamLogo  TeamLogo--small").get(0).html();
-					teamUrl = "https://cbssports.com" + teamUrl.replace("<a href=\"", "").split("/\">")[0] + "/stats";
+					teamUrl = "https://www.cbssports.com" + teamUrl.replace("<a href=\"", "").split("/\">")[0] + "/stats".replace(" ", "");
 					System.out.println("Opponent url: " + teamUrl);
-					opponent = statsUrlToTeam.get(teamUrl);
+					//only override BYE team when we have a match
+					if(statsUrlToTeam.containsKey(teamUrl)) {
+						opponent = statsUrlToTeam.get(teamUrl);
+					}
 					break;
 				}
-				
+
 			}
-		}catch(Exception ex) {
+		} catch (Exception ex) {
 			System.out.println("Error: " + ex.getMessage());
 			System.out.println("Setting opponent to BYE for " + currTeam.getName());
 		}
-		
+
 		return opponent;
 	}
 
