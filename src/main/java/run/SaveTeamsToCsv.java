@@ -19,7 +19,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import core.Farnsworth;
 import domain.Team;
 
-public class saveTeamsToCsv {
+public class SaveTeamsToCsv {
 
 	public static void main(String[] args) throws IOException, UnirestException {
 

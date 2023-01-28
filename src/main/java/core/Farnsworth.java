@@ -7,6 +7,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -19,6 +23,8 @@ import domain.MyStack;
 import util.CbsLookup;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -258,7 +264,7 @@ public class Farnsworth {
 
 					}
 					System.out.println(teamNameFormatted);
-					//trim whitespace
+					// trim whitespace
 					url = url.replace(" ", "");
 					System.out.println(url);
 					team.setStatsUrl(url);
@@ -315,10 +321,11 @@ public class Farnsworth {
 				if (gameLd.isAfter(todayLd)) {
 					// this is the next game
 					String teamUrl = row.getElementsByClass("TeamLogo  TeamLogo--small").get(0).html();
-					teamUrl = "https://www.cbssports.com" + teamUrl.replace("<a href=\"", "").split("/\">")[0] + "/stats".replace(" ", "");
+					teamUrl = "https://www.cbssports.com" + teamUrl.replace("<a href=\"", "").split("/\">")[0]
+							+ "/stats".replace(" ", "");
 					System.out.println("Opponent url: " + teamUrl);
-					//only override BYE team when we have a match
-					if(statsUrlToTeam.containsKey(teamUrl)) {
+					// only override BYE team when we have a match
+					if (statsUrlToTeam.containsKey(teamUrl)) {
 						opponent = statsUrlToTeam.get(teamUrl);
 					}
 					break;
@@ -331,6 +338,86 @@ public class Farnsworth {
 		}
 
 		return opponent;
+	}
+
+	public String findWinner(Team team1, Team team2) {
+		String winner = null;
+		try {
+			String scheduleUrl = team1.getStatsUrl().replace("stats", "schedule");
+			HttpResponse<String> cbsResponse = Unirest.get(scheduleUrl).asString();
+			Document doc = Jsoup.parse(cbsResponse.getBody());
+			Elements tableRows = doc.getElementsByClass("TableBase-bodyTr");
+
+			for (int i = tableRows.size() - 1; i > -1; i--) {
+
+				Element row = tableRows.get(i);
+
+				// this is the next game
+				String teamUrl = row.getElementsByClass("TeamLogo  TeamLogo--small").get(0).html();
+				teamUrl = "https://www.cbssports.com" + teamUrl.replace("<a href=\"", "").split("/\">")[0]
+						+ "/stats".replace(" ", "");
+				// only override winner when we have a match
+				if (team2.getStatsUrl().replace(" ", "").equals(teamUrl)) {
+					String gameDate = row.getElementsByClass("CellGameDate").get(0).html();
+					LocalDate gameLd = LocalDate.parse(gameDate, DateTimeFormatter.ofPattern("MMM d, yyyy"));
+					LocalDate todayLd = LocalDate.now();
+					// make sure game has passed already
+					if (todayLd.isAfter(gameLd)) {
+						Element gameResult = row.getElementsByClass("CellGame").get(0);
+						Elements winnerClass = gameResult.getElementsByClass("CellGame-win");
+						if (winnerClass == null || winnerClass.isEmpty()) {
+							winner = team2.getName();
+						} else {
+							winner = team1.getName();
+						}
+					}
+
+					break;
+
+				}
+
+			}
+
+			System.out.println("Winner: " + winner);
+
+		} catch (Exception ex) {
+			System.out.println("Error: " + ex.getMessage());
+			System.out.println("Setting winner to null ");
+		}
+
+		return winner;
+	}
+
+	public void predictFromCsv() throws IOException {
+		final PrintStream oldStdout = System.out;
+		File file = new File("C:/Users/jorda/Documents/predictions.txt");
+		PrintStream stream = new PrintStream(file);
+
+		System.setOut(stream);
+		ObjectMapper mapper = new CsvMapper();
+
+		CsvSchema schema = CsvSchema.emptySchema().withHeader();
+
+		String content = new String(Files.readAllBytes(Paths.get("C:/Users/jorda/Documents/TeamsToPlay.csv")));
+		MappingIterator<Team> it = mapper.readerFor(Team.class).with(schema).readValues(content);
+		List<Team> teams = it.readAll();
+
+		for (int i = 0; i < teams.size() - 1; i = i + 2) {
+			Team team1 = teams.get(i);
+			Team team2 = teams.get(i + 1);
+			compareTeams(team1, team2);
+			String winner = predictWinner(team1, team2);
+			String name1 = team1.toString();
+			String name2 = team2.toString();
+			double total1 = team1.getTotalScore();
+			double total2 = team2.getTotalScore();
+			System.out.println(name1 + ": " + total1);
+			System.out.println(name2 + ": " + total2);
+			System.out.println(winner);
+		}
+		
+		System.setOut(oldStdout);
+
 	}
 
 }
