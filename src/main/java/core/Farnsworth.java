@@ -30,9 +30,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * @Steven Jordan @02/01/2015
+ * @Life of Sherba @02/01/2015
  * 
- *         cleanup started 11/26/2022
+ *        new  updates started 11/26/2022
  */
 public class Farnsworth {
 
@@ -44,8 +44,6 @@ public class Farnsworth {
 	private File file2 = new File("weights2.txt");
 	private File file3 = new File("weights3.txt");
 	private Map<String, Team> statsUrlToTeam;
-
-	// private String winner = "You lose! You get nothing!";
 
 	public Farnsworth() throws IOException {
 		brain1 = new Brain(file1);
@@ -372,7 +370,7 @@ public class Farnsworth {
 						}
 					}
 
-					break;
+				//	break;
 
 				}
 
@@ -413,7 +411,7 @@ public class Farnsworth {
 			double total2 = team2.getTotalScore();
 			System.out.println(name1 + ": " + total1);
 			System.out.println(name2 + ": " + total2);
-			System.out.println(winner);
+			System.out.println("Winner: " + winner);
 		}
 		
 		System.setOut(oldStdout);

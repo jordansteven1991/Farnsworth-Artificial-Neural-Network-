@@ -4,9 +4,9 @@ import java.util.*;
 import java.io.*;
 
 /**
- * @Steven Jordan @02/01/2013
+ * @Life of Sherba @02/01/2013
  * 
- * cleanup started 11/26/2022
+ * updates started 11/26/2022
  */
 public class Brain {
 	// instance variables - replace the example below with your own

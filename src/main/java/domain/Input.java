@@ -1,6 +1,6 @@
 package domain;
 /**
- * @Steven Jordan
+ * @Life of Sherba
  * @02/02/2015
  */
 public class Input

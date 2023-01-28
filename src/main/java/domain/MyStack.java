@@ -2,8 +2,7 @@ package domain;
 /**
  * Write a description of class MyStack here.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @Life of Sherba
  * need to get rid of this later
  */
 public class MyStack

@@ -51,22 +51,21 @@ public class TrainFromCsv {
 		}
 		
 		//set the number to beat when training
-		int bestRun = 41;
+		int bestRun = 87;
 		int currentBestRun = 0;
 		
 		//set number of times to train the list of games
-		int trainingSets = 10;
+		int trainingSets = 100;
 		
 		for(int i = 0; i < trainingSets; i++) {
 			farnsworth.weightShuffle();
 			farnsworth.predictFromCsv();
 			List<String> predictLog = Files.readAllLines(Paths.get("C:/Users/jorda/Documents/predictions.txt"));
-			int predictIndex = -1;
 			int numberOfCorrectPicks = 0;
+			
 			for(Game game : gamesToTrain) {
-				predictIndex = predictIndex + 3;
-				String predictedWinner = predictLog.get(predictIndex);
-				if(predictedWinner.trim().equals(game.getWinner().trim())) {
+		
+				if(predictLog.contains("Winner: " + game.getWinner().trim())) {
 					numberOfCorrectPicks++;
 				}
 			}

@@ -1,7 +1,7 @@
 package domain;
 import java.util.*;
 /**
- * @Steven Jordan
+ * @Life of Sherba
  * @02/02/2015
  */
 public class Weight

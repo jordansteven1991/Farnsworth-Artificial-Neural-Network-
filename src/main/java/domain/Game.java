@@ -1,7 +1,7 @@
 package domain;
 
 /**
- * @Steven Jordan
+ * @Life of Sherba
  * @01/24/15
  */
 public class Game

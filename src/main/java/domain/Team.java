@@ -5,7 +5,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * @Steven Jordan
+ * @Life of Sherba
  * @01/24/15
  */
 @JsonPropertyOrder({"name", "statsUrl", "ppg", "ft", "AdjO", "AdjD", "fg", "pyth", "rank", "luck", "sos", "tp", "conference", "bracket", "totalScore"})
