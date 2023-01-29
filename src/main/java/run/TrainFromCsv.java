@@ -51,11 +51,11 @@ public class TrainFromCsv {
 		}
 		
 		//set the number to beat when training
-		int bestRun = 87;
+		int bestRun = 114;
 		int currentBestRun = 0;
 		
 		//set number of times to train the list of games
-		int trainingSets = 100;
+		int trainingSets = 10000;
 		
 		for(int i = 0; i < trainingSets; i++) {
 			farnsworth.weightShuffle();
@@ -70,6 +70,7 @@ public class TrainFromCsv {
 				}
 			}
 			
+			System.out.println("numberOfCorrectPicks: " + numberOfCorrectPicks);
 			if(numberOfCorrectPicks > currentBestRun) {
 				currentBestRun = numberOfCorrectPicks;
 				

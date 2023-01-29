@@ -220,8 +220,10 @@ public class Brain {
 	public void neuronShuffle() {
 
 		Random tempRand = new Random();
-		int binary = tempRand.nextInt(2);
+		
 		for (Neuron temp : neurons) {
+			
+			int binary = tempRand.nextInt(2);
 
 			if (temp.getState() == 1) {
 				if (binary == 1) {
