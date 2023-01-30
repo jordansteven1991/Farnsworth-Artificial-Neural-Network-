@@ -386,7 +386,7 @@ public class Farnsworth {
 		return winner;
 	}
 
-	public void predictFromCsv() throws IOException {
+	public void predictFromCsv(boolean addMadness) throws IOException {
 		final PrintStream oldStdout = System.out;
 		File file = new File("C:/Users/jorda/Documents/predictions.txt");
 		PrintStream stream = new PrintStream(file);
@@ -403,6 +403,12 @@ public class Farnsworth {
 		for (int i = 0; i < teams.size() - 1; i = i + 2) {
 			Team team1 = teams.get(i);
 			Team team2 = teams.get(i + 1);
+			if(addMadness) {
+				Game game = new Game(team1, team2);
+				makeMadness(game);
+				team1 = game.getTeam1();
+				team2 = game.getTeam2();
+			}
 			compareTeams(team1, team2);
 			String winner = predictWinner(team1, team2);
 			String name1 = team1.toString();

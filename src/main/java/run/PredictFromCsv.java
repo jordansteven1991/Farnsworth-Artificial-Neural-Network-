@@ -9,7 +9,7 @@ public class PredictFromCsv {
 
 		Farnsworth farnsworth = new Farnsworth();
 
-		farnsworth.predictFromCsv();
+		farnsworth.predictFromCsv(false);
 
 	}
 

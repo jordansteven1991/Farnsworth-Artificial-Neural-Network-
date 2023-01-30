@@ -36,55 +36,55 @@ public class TrainFromCsv {
 		for (int i = 0; i < teams.size() - 1; i = i + 2) {
 			Team team1 = teams.get(i);
 			Team team2 = teams.get(i + 1);
-			
+
 			String winnerName = farnsworth.findWinner(team1, team2);
 			// if no winner is found it's likely the game hasn't been played yet and should
 			// be skipped
 			if (winnerName == null) {
 				continue;
 			}
-			
+
 			gamesToTrain.add(new Game(team1, team2, winnerName));
 
-			
-
 		}
-		
-		//set the number to beat when training
-		int bestRun = 114;
+
+		// set the number to beat when training
+		int bestRun = 50;
 		int currentBestRun = 0;
-		
-		//set number of times to train the list of games
-		int trainingSets = 10000;
-		
-		for(int i = 0; i < trainingSets; i++) {
+
+		// set number of times to train the list of games
+		int trainingSets = 50000;
+
+		// number of games to check in case you only want to do more standard teams
+		int numOfGames = 63;
+
+		for (int i = 0; i < trainingSets; i++) {
 			farnsworth.weightShuffle();
-			farnsworth.predictFromCsv();
+			farnsworth.predictFromCsv(false);
 			List<String> predictLog = Files.readAllLines(Paths.get("C:/Users/jorda/Documents/predictions.txt"));
 			int numberOfCorrectPicks = 0;
-			
-			for(Game game : gamesToTrain) {
-		
-				if(predictLog.contains("Winner: " + game.getWinner().trim())) {
+
+			for (int j = 0; j < numOfGames; j++) {
+				Game game = gamesToTrain.get(j);
+				if (predictLog.contains("Winner: " + game.getWinner().trim())) {
 					numberOfCorrectPicks++;
 				}
 			}
-			
+
 			System.out.println("numberOfCorrectPicks: " + numberOfCorrectPicks);
-			if(numberOfCorrectPicks > currentBestRun) {
+			if (numberOfCorrectPicks > currentBestRun) {
 				currentBestRun = numberOfCorrectPicks;
-				
-				if(currentBestRun > bestRun) {
+
+				if (currentBestRun > bestRun) {
 					System.out.println("Current run is higher than best run.  Saving weights");
 					farnsworth.saveWeights();
 				}
 			}
 		}
-		
 
-		System.out.println("Number of Games Checked: " + gamesToTrain.size());
+		System.out.println("Number of Games Checked: " + numOfGames);
 		System.out.println("Best Number of correct games: " + currentBestRun);
-		
+
 	}
 
 }
