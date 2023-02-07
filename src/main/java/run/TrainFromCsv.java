@@ -49,17 +49,18 @@ public class TrainFromCsv {
 		}
 
 		// set the number to beat when training
-		int bestRun = 50;
+		int bestRun = 115;
 		int currentBestRun = 0;
 
 		// set number of times to train the list of games
-		int trainingSets = 50000;
+		int trainingSets = 80000;
 
 		// number of games to check in case you only want to do more standard teams
-		int numOfGames = 63;
+		int numOfGames = gamesToTrain.size();
 
 		for (int i = 0; i < trainingSets; i++) {
 			farnsworth.weightShuffle();
+			//pass true to add random chance
 			farnsworth.predictFromCsv(false);
 			List<String> predictLog = Files.readAllLines(Paths.get("C:/Users/jorda/Documents/predictions.txt"));
 			int numberOfCorrectPicks = 0;
