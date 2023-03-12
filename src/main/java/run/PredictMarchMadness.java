@@ -100,6 +100,10 @@ public class PredictMarchMadness {
 				isDone = true;
 			}
 		}
+		
+		for(String bracket : completedBrackets) {
+			System.out.println(bracket);
+		}
 
 		
 
