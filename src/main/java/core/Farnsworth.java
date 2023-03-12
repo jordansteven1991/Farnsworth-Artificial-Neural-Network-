@@ -32,7 +32,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * @Life of Sherba @02/01/2015
  * 
- *        new  updates started 11/26/2022
+ *       new updates started 11/26/2022
  */
 public class Farnsworth {
 
@@ -172,7 +172,7 @@ public class Farnsworth {
 //        
 //     }
 
-	public List<Team> getTeams() throws IOException, UnirestException {
+	public List<Team> getTeams(boolean tourney) throws IOException, UnirestException {
 		Unirest.setTimeouts(0, 0);
 
 		// prepare cbsLookup
@@ -205,7 +205,13 @@ public class Farnsworth {
 		Elements bodyContents = table.getElementsByTag("tbody");
 		List<Team> teams = new ArrayList<>();
 		for (Element rows : bodyContents) {
-			Elements trRows = rows.getElementsByTag("tr");
+			Elements trRows = null;
+			if (tourney) {
+				// for march madness only pull tourney teams
+				trRows = rows.getElementsByClass("tourney");
+			} else {
+				trRows = rows.getElementsByTag("tr");
+			}
 			for (Element rawTeam : trRows) {
 				Elements rawTeamFields = rawTeam.getElementsByTag("td");
 				Team team = new Team();
@@ -221,6 +227,12 @@ public class Farnsworth {
 				team.setAdjD(Double.parseDouble(adjD));
 				String luck = rawTeamFields.get(11).html().replace("+", "");
 				team.setLuck(Double.parseDouble(luck));
+
+				if (tourney) {
+					// set seed
+					int seed = Integer.parseInt(rawTeamFields.get(1).getElementsByClass("seed").get(0).html());
+					team.setSeed(seed);
+				}
 
 				try {
 					// add cbs sports stats
@@ -370,7 +382,7 @@ public class Farnsworth {
 						}
 					}
 
-				//	break;
+					// break;
 
 				}
 
@@ -403,7 +415,7 @@ public class Farnsworth {
 		for (int i = 0; i < teams.size() - 1; i = i + 2) {
 			Team team1 = teams.get(i);
 			Team team2 = teams.get(i + 1);
-			if(addMadness) {
+			if (addMadness) {
 				Game game = new Game(team1, team2);
 				makeMadness(game);
 				team1 = game.getTeam1();
@@ -419,9 +431,26 @@ public class Farnsworth {
 			System.out.println(name2 + ": " + total2);
 			System.out.println("Winner: " + winner);
 		}
-		
+
 		System.setOut(oldStdout);
 
+	}
+
+	public Team predictGameReturnTeam(Game game, boolean addMadness) {
+		if (addMadness) {
+			makeMadness(game);
+		}
+
+		Team team1 = game.getTeam1();
+		Team team2 = game.getTeam2();
+		compareTeams(team1, team2);
+		String winner = predictWinner(team1, team2);
+		if(winner.equals(team1.toString())) {
+			return team1;
+		} else { 
+			return team2;
+		}
+		
 	}
 
 }

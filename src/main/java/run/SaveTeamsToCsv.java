@@ -24,7 +24,8 @@ public class SaveTeamsToCsv {
 	public static void main(String[] args) throws IOException, UnirestException {
 
 		Farnsworth farnsworth = new Farnsworth();
-		List<Team> teams = farnsworth.getTeams();
+		//change to true for march madness
+		List<Team> teams = farnsworth.getTeams(false);
 		List<Team> csvTeams = new ArrayList<>();
 		Map<Team, Team> teamsProcessed = new HashMap<>();
 
@@ -39,14 +40,14 @@ public class SaveTeamsToCsv {
 		}
 
 		// set correct directory as output
-		File csvOutputFile = new File("C:/Users/jorda/Documents/TeamsToPlay.csv");
+		File csvOutputFile = new File("C:/Users/jorda/Documents/TeamsToPlayTest.csv");
 
 		CsvMapper mapper = new CsvMapper();
 		mapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, false);
 		CsvSchema schema = CsvSchema.builder().setUseHeader(true).addColumn("name").addColumn("statsUrl")
 				.addColumn("ppg").addColumn("ft").addColumn("adjO").addColumn("adjD").addColumn("fg").addColumn("pyth")
 				.addColumn("rank").addColumn("luck").addColumn("sos").addColumn("tp").addColumn("conference")
-				.addColumn("bracket").addColumn("totalScore").build();
+				.addColumn("bracket").addColumn("totalScore").addColumn("seed").build();
 
 		ObjectWriter writer = mapper.writerFor(Team.class).with(schema);
 

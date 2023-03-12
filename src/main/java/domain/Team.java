@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * @Life of Sherba
  * @01/24/15
  */
-@JsonPropertyOrder({"name", "statsUrl", "ppg", "ft", "AdjO", "AdjD", "fg", "pyth", "rank", "luck", "sos", "tp", "conference", "bracket", "totalScore"})
+@JsonPropertyOrder({"name", "statsUrl", "ppg", "ft", "AdjO", "AdjD", "fg", "pyth", "rank", "luck", "sos", "tp", "conference", "bracket", "totalScore", "team"})
 public class Team implements Serializable
 {
    
@@ -28,6 +28,7 @@ public class Team implements Serializable
     private double totalScore;            //For calculating best overall team
     private double tp;                    //Three point percentage
     private String statsUrl;
+    private int seed;
     
 
 
@@ -49,6 +50,7 @@ public class Team implements Serializable
         bracket = "Test";
         totalScore = 0;
         sos = 0;
+        seed = 0;
     }
     
     public Team(double ppg, double ft, double AdjO, double AdjD, double fg, double pyth, double rank, double luck, String name, String conference, String bracket)
@@ -65,6 +67,7 @@ public class Team implements Serializable
         this.bracket = bracket;
         totalScore = 0;
         sos = 0;
+        seed = 0;
         
         
     }
@@ -83,11 +86,20 @@ public class Team implements Serializable
         this.bracket = bracket;
         totalScore = 0;
         this.tp = tp;
+        seed = 0;
         
         
     }
     
-    public void setTotalScore(double totalScore)
+    public int getSeed() {
+		return seed;
+	}
+
+	public void setSeed(int seed) {
+		this.seed = seed;
+	}
+
+	public void setTotalScore(double totalScore)
     {
         this.totalScore = totalScore;
     }
