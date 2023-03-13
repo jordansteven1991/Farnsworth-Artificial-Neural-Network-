@@ -25,7 +25,7 @@ public class SaveTeamsToCsv {
 
 		Farnsworth farnsworth = new Farnsworth();
 		//change to true for march madness
-		List<Team> teams = farnsworth.getTeams(false);
+		List<Team> teams = farnsworth.getTeams(true);
 		List<Team> csvTeams = new ArrayList<>();
 		Map<Team, Team> teamsProcessed = new HashMap<>();
 

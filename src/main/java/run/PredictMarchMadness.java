@@ -30,7 +30,7 @@ public class PredictMarchMadness {
 		List<Team> teams = it.readAll();
 		List<Team> westBracket = new ArrayList<>();
 		List<Team> eastBracket = new ArrayList<>();
-		List<Team> northBracket = new ArrayList<>();
+		List<Team> midwestBracket = new ArrayList<>();
 		List<Team> southBracket = new ArrayList<>();
 
 		for (int i = 0; i < teams.size(); i++) {
@@ -42,7 +42,7 @@ public class PredictMarchMadness {
 			} else if (team.getBracket().toLowerCase().equals("south")) {
 				southBracket.add(team.getSeed()-1, team);
 			} else {
-				northBracket.add(team.getSeed()-1, team);
+				midwestBracket.add(team.getSeed()-1, team);
 			}
 
 		}
@@ -62,16 +62,16 @@ public class PredictMarchMadness {
 			List<Team> westWinners = getBracketRegionWinners(westBracket, farnsworth);
 			List<Team> eastWinners = getBracketRegionWinners(eastBracket, farnsworth);
 			List<Team> southWinners = getBracketRegionWinners(southBracket, farnsworth);
-			List<Team> northWinners = getBracketRegionWinners(northBracket, farnsworth);
+			List<Team> midwestWinners = getBracketRegionWinners(midwestBracket, farnsworth);
 
 			Team westWinner = westWinners.get(westWinners.size() - 1);
 			Team eastWinner = eastWinners.get(eastWinners.size() - 1);
 			Team southWinner = southWinners.get(southWinners.size() - 1);
-			Team northWinner = northWinners.get(northWinners.size() - 1);
+			Team midwestWinner = midwestWinners.get(midwestWinners.size() - 1);
 
 			Game finalFourGame1 = new Game(westWinner, eastWinner);
 			Team finalTeam1 = farnsworth.predictGameReturnTeam(finalFourGame1, true);
-			Game finalFourGame2 = new Game(southWinner, northWinner);
+			Game finalFourGame2 = new Game(southWinner, midwestWinner);
 			Team finalTeam2 = farnsworth.predictGameReturnTeam(finalFourGame2, true);
 
 			Game finale = new Game(finalTeam1, finalTeam2);
@@ -81,7 +81,7 @@ public class PredictMarchMadness {
 			allWinners.addAll(westBracket);
 			allWinners.addAll(eastBracket);
 			allWinners.addAll(southWinners);
-			allWinners.addAll(northBracket);
+			allWinners.addAll(midwestBracket);
 			allWinners.add(finalTeam1);
 			allWinners.add(finalTeam2);
 			allWinners.add(marchMadnessWinner);
