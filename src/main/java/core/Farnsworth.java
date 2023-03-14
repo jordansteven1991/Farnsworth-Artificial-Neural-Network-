@@ -37,18 +37,18 @@ import java.time.format.DateTimeFormatter;
 public class Farnsworth {
 
 	private Brain brain1;
-	private Brain brain2;
-	private Brain brain3;
+	//private Brain brain2;
+	//private Brain brain3;
 
-	private File file1 = new File("weights1.txt");
+	//private File file1 = new File("weights1.txt");
 	private File file2 = new File("weights2.txt");
-	private File file3 = new File("weights3.txt");
+	//private File file3 = new File("weights3.txt");
 	private Map<String, Team> statsUrlToTeam;
 
 	public Farnsworth() throws IOException {
-		brain1 = new Brain(file1);
-		brain2 = new Brain(file2);
-		brain3 = new Brain(file3);
+		brain1 = new Brain(file2);
+		//brain2 = new Brain(file2);
+		//brain3 = new Brain(file2);
 		// brain4 = new Brain();
 
 		statsUrlToTeam = new HashMap<>();
@@ -76,20 +76,18 @@ public class Farnsworth {
 		Input tp2 = new Input(team2.getTp());
 
 		brain1.feedBrain(AdjO1, ft1, pyth1);
-		brain2.feedBrain(ppg1, fg1, luck1, tp1);
-		brain3.feedBrain(AdjD1, rank1, pyth2);
-
 		MyStack results1 = brain1.getResults();
-		MyStack results2 = brain2.getResults();
-		MyStack results3 = brain3.getResults();
+		brain1.feedBrain(ppg1, fg1, luck1, tp1);
+		MyStack results2 = brain1.getResults();
+		brain1.feedBrain(AdjD1, rank1, pyth2);
+		MyStack results3 = brain1.getResults();
 
 		brain1.feedBrain(AdjO2, ft2, pyth2);
-		brain2.feedBrain(ppg2, fg2, luck2, tp2);
-		brain3.feedBrain(AdjD2, rank2, pyth1);
-
 		MyStack results4 = brain1.getResults();
-		MyStack results5 = brain2.getResults();
-		MyStack results6 = brain3.getResults();
+		brain1.feedBrain(ppg2, fg2, luck2, tp2);
+		MyStack results5 = brain1.getResults();
+		brain1.feedBrain(AdjD2, rank2, pyth1);
+		MyStack results6 = brain1.getResults();
 
 		double temp = 0;
 		double temp2 = 1;
@@ -141,28 +139,28 @@ public class Farnsworth {
 
 	public void weightShuffle() {
 		brain1.neuronShuffle();
-		brain2.neuronShuffle();
-		brain3.neuronShuffle();
+		//brain2.neuronShuffle();
+		//brain3.neuronShuffle();
 	}
 
 	public void saveWeights() throws IOException {
 		brain1.saveWeights();
-		brain2.saveWeights();
-		brain3.saveWeights();
+		//brain2.saveWeights();
+		//brain3.saveWeights();
 	}
 
 	public void makeMadness(Game game) {
 		Team team1 = game.getTeam1();
 		Team team2 = game.getTeam2();
 
-		double ppg1 = team1.getPpg();
-		double ppg2 = team2.getPpg();
+		double adjO1 = team1.getAdjO();
+		double adjO2 = team2.getAdjO();
 
 		Random rand1 = new Random();
 		Random rand2 = new Random();
 
-		double total1 = ppg1 * rand1.nextInt(200);
-		double total2 = ppg2 * rand2.nextInt(200);
+		double total1 = adjO1 * rand1.nextInt(150);
+		double total2 = adjO2 * rand2.nextInt(150);
 
 		team1.setTotalScore(total1);
 		team2.setTotalScore(total2);
@@ -443,8 +441,12 @@ public class Farnsworth {
 
 		Team team1 = game.getTeam1();
 		Team team2 = game.getTeam2();
+		
 		compareTeams(team1, team2);
 		String winner = predictWinner(team1, team2);
+		System.out.println(team1.toString());
+		System.out.println(team2.toString());
+		System.out.println("Winner: " + winner);
 		if(winner.equals(team1.toString())) {
 			return team1;
 		} else { 

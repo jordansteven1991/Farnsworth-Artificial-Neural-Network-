@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,27 +29,32 @@ public class PredictMarchMadness {
 		String content = new String(Files.readAllBytes(Paths.get("C:/Users/jorda/Documents/TeamsToPlay.csv")));
 		MappingIterator<Team> it = mapper.readerFor(Team.class).with(schema).readValues(content);
 		List<Team> teams = it.readAll();
-		List<Team> westBracket = new ArrayList<>();
-		List<Team> eastBracket = new ArrayList<>();
-		List<Team> midwestBracket = new ArrayList<>();
-		List<Team> southBracket = new ArrayList<>();
+		Team[] westBracketArray = new Team[16];
+		Team[] eastBracketArray = new Team[16];
+		Team[] midwestBracketArray = new Team[16];
+		Team[] southBracketArray = new Team[16];
 
 		for (int i = 0; i < teams.size(); i++) {
 			Team team = teams.get(i);
 			if (team.getBracket().toLowerCase().equals("west")) {
-				westBracket.add(team.getSeed()-1, team);
+				westBracketArray[team.getSeed()-1] = team;
 			} else if (team.getBracket().toLowerCase().equals("east")) {
-				eastBracket.add(team.getSeed()-1, team);
+				eastBracketArray[team.getSeed()-1] = team;
 			} else if (team.getBracket().toLowerCase().equals("south")) {
-				southBracket.add(team.getSeed()-1, team);
+				southBracketArray[team.getSeed()-1] = team;
 			} else {
-				midwestBracket.add(team.getSeed()-1, team);
+				midwestBracketArray[team.getSeed()-1] = team;
 			}
 
 		}
 		
+		List<Team> westBracket = Arrays.asList(westBracketArray);
+		List<Team> eastBracket = Arrays.asList(eastBracketArray);
+		List<Team> southBracket = Arrays.asList(southBracketArray);
+		List<Team> midwestBracket = Arrays.asList(midwestBracketArray);
+		
 		//set number of unique brackets to spit out
-		int numOfUniqueBrackets = 7;
+		int numOfUniqueBrackets = 10;
 		int currentNumOfUniqueBrackets = 0;
 		
 		boolean isDone = false;
@@ -69,19 +75,22 @@ public class PredictMarchMadness {
 			Team southWinner = southWinners.get(southWinners.size() - 1);
 			Team midwestWinner = midwestWinners.get(midwestWinners.size() - 1);
 
-			Game finalFourGame1 = new Game(westWinner, eastWinner);
+			System.out.println("--------------");
+			System.out.println("final four");
+			System.out.println("--------------");
+			Game finalFourGame1 = new Game(westWinner, midwestWinner);
 			Team finalTeam1 = farnsworth.predictGameReturnTeam(finalFourGame1, true);
-			Game finalFourGame2 = new Game(southWinner, midwestWinner);
+			Game finalFourGame2 = new Game(southWinner, eastWinner);
 			Team finalTeam2 = farnsworth.predictGameReturnTeam(finalFourGame2, true);
 
 			Game finale = new Game(finalTeam1, finalTeam2);
 			Team marchMadnessWinner = farnsworth.predictGameReturnTeam(finale, true);
 			
 			//collect winners
-			allWinners.addAll(westBracket);
-			allWinners.addAll(eastBracket);
+			allWinners.addAll(westWinners);
+			allWinners.addAll(eastWinners);
 			allWinners.addAll(southWinners);
-			allWinners.addAll(midwestBracket);
+			allWinners.addAll(midwestWinners);
 			allWinners.add(finalTeam1);
 			allWinners.add(finalTeam2);
 			allWinners.add(marchMadnessWinner);
@@ -101,6 +110,7 @@ public class PredictMarchMadness {
 			}
 		}
 		
+		System.out.println("Winners: ");
 		for(String bracket : completedBrackets) {
 			System.out.println(bracket);
 		}
@@ -115,6 +125,9 @@ public class PredictMarchMadness {
 		List<Team> winners = new ArrayList<>();
 
 		// round 1
+		System.out.println("--------------");
+		System.out.println("round1");
+		System.out.println("--------------");
 		Game game1 = new Game(bracketRegion.get(0), bracketRegion.get(15));
 		Team game1Winner = farnsworth.predictGameReturnTeam(game1, true);
 		winners.add(game1Winner);
@@ -148,6 +161,9 @@ public class PredictMarchMadness {
 		winners.add(game8Winner);
 
 		// round 2
+		System.out.println("--------------");
+		System.out.println("round2");
+		System.out.println("--------------");
 		Game game9 = new Game(game1Winner, game2Winner);
 		Team game9Winner = farnsworth.predictGameReturnTeam(game9, true);
 		winners.add(game9Winner);
@@ -165,6 +181,9 @@ public class PredictMarchMadness {
 		winners.add(game12Winner);
 
 		// round 3
+		System.out.println("--------------");
+		System.out.println("round3");
+		System.out.println("--------------");
 		Game game13 = new Game(game9Winner, game10Winner);
 		Team game13Winner = farnsworth.predictGameReturnTeam(game13, true);
 		winners.add(game13Winner);
@@ -174,11 +193,14 @@ public class PredictMarchMadness {
 		winners.add(game14Winner);
 
 		// round 4
+		System.out.println("--------------");
+		System.out.println("round4");
+		System.out.println("--------------");
 		Game game15 = new Game(game13Winner, game14Winner);
 		Team game15Winner = farnsworth.predictGameReturnTeam(game15, true);
 		winners.add(game15Winner);
 
-		// get winner
+		// get winners
 		return winners;
 	}
 
