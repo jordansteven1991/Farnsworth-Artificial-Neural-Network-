@@ -10,8 +10,10 @@ public class Game
     private Team team1;
     private Team team2;
     private String winner = "You lose!  You get nothing!";
+    private boolean upset = true;
 
-    /**
+    
+	/**
      * Constructor for objects of class Game
      */
     public Game(Team team1, Team team2, String winner)
@@ -50,4 +52,12 @@ public class Game
     {
         this.winner = winner;
     }
+    
+    public boolean isUpset() {
+		return upset;
+	}
+    
+	public void setUpset(boolean upset) {
+		this.upset = upset;
+	}
 }

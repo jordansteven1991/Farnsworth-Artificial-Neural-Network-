@@ -204,7 +204,7 @@ public class Brain {
 		inputs.add(input1);
 		inputs.add(input2);
 		inputs.add(input3);
-		inputs.add(input3);
+		inputs.add(input4);
 		activateNeurons();
 	}
 

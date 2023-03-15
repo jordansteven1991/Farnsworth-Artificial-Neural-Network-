@@ -159,8 +159,8 @@ public class Farnsworth {
 		Random rand1 = new Random();
 		Random rand2 = new Random();
 
-		double total1 = adjO1 * rand1.nextInt(150);
-		double total2 = adjO2 * rand2.nextInt(150);
+		double total1 = adjO1 * rand1.nextInt(200);
+		double total2 = adjO2 * rand2.nextInt(200);
 
 		team1.setTotalScore(total1);
 		team2.setTotalScore(total2);
@@ -448,8 +448,18 @@ public class Farnsworth {
 		System.out.println(team2.toString());
 		System.out.println("Winner: " + winner);
 		if(winner.equals(team1.toString())) {
+			if(team1.getSeed() > team2.getSeed()) {
+				game.setUpset(true);
+			} else {
+				game.setUpset(false);
+			}
 			return team1;
 		} else { 
+			if(team2.getSeed() > team1.getSeed()) {
+				game.setUpset(true);
+			} else {
+				game.setUpset(false);
+			}
 			return team2;
 		}
 		
