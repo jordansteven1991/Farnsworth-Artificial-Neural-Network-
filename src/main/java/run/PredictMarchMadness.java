@@ -57,7 +57,7 @@ public class PredictMarchMadness {
 		List<Team> midwestBracket = Arrays.asList(midwestBracketArray);
 
 		// set number of unique brackets to spit out
-		int numOfUniqueBrackets = 9;
+		int numOfUniqueBrackets = 25;
 		int currentNumOfUniqueBrackets = 0;
 
 		boolean isDone = false;
