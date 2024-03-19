@@ -159,8 +159,8 @@ public class Farnsworth {
 		Random rand1 = new Random();
 		Random rand2 = new Random();
 
-		double total1 = adjO1 * rand1.nextInt(200);
-		double total2 = adjO2 * rand2.nextInt(200);
+		double total1 = adjO1 * rand1.nextInt(150);
+		double total2 = adjO2 * rand2.nextInt(150);
 
 		team1.setTotalScore(total1);
 		team2.setTotalScore(total2);

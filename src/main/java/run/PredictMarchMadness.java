@@ -57,7 +57,7 @@ public class PredictMarchMadness {
 		List<Team> midwestBracket = Arrays.asList(midwestBracketArray);
 
 		// set number of unique brackets to spit out
-		int numOfUniqueBrackets = 25;
+		int numOfUniqueBrackets = 30;
 		int currentNumOfUniqueBrackets = 0;
 
 		boolean isDone = false;
@@ -67,11 +67,12 @@ public class PredictMarchMadness {
 		while (!isDone) {
 			// create list to capture winners
 			List<Team> allWinners = new ArrayList<>();
+			boolean makeMadness = true;
 
-			BracketRegion westBracketResults = getBracketRegionWinners(westBracket, farnsworth);
-			BracketRegion eastBracketResults = getBracketRegionWinners(eastBracket, farnsworth);
-			BracketRegion southBracketResults = getBracketRegionWinners(southBracket, farnsworth);
-			BracketRegion midwestBracketResults = getBracketRegionWinners(midwestBracket, farnsworth);
+			BracketRegion westBracketResults = getBracketRegionWinners(westBracket, farnsworth, makeMadness);
+			BracketRegion eastBracketResults = getBracketRegionWinners(eastBracket, farnsworth, makeMadness);
+			BracketRegion southBracketResults = getBracketRegionWinners(southBracket, farnsworth, makeMadness);
+			BracketRegion midwestBracketResults = getBracketRegionWinners(midwestBracket, farnsworth, makeMadness);
 
 			List<Team> westWinners = westBracketResults.getAllWinners();
 			List<Team> eastWinners = eastBracketResults.getAllWinners();
@@ -91,9 +92,9 @@ public class PredictMarchMadness {
 			MarchMadness marchMadness = new MarchMadness(westBracketResults, eastBracketResults, southBracketResults,
 					midwestBracketResults, finalFour);
 			//
-			Game finalFourGame1 = new Game(westWinner, midwestWinner);
+			Game finalFourGame1 = new Game(westWinner, eastWinner);
 			Team finalTeam1 = farnsworth.predictGameReturnTeam(finalFourGame1, true);
-			Game finalFourGame2 = new Game(southWinner, eastWinner);
+			Game finalFourGame2 = new Game(southWinner, midwestWinner);
 			Team finalTeam2 = farnsworth.predictGameReturnTeam(finalFourGame2, true);
 
 			Game finale = new Game(finalTeam1, finalTeam2);
@@ -131,7 +132,7 @@ public class PredictMarchMadness {
 
 	}
 
-	private static BracketRegion getBracketRegionWinners(List<Team> bracketRegion, Farnsworth farnsworth) {
+	private static BracketRegion getBracketRegionWinners(List<Team> bracketRegion, Farnsworth farnsworth, boolean makeMadness) {
 
 		// collect all winners to compare each bracket iteration
 		List<Team> winners = new ArrayList<>();
@@ -143,56 +144,56 @@ public class PredictMarchMadness {
 		System.out.println("round1");
 		System.out.println("--------------");
 		Game game1 = new Game(bracketRegion.get(0), bracketRegion.get(15));
-		Team game1Winner = farnsworth.predictGameReturnTeam(game1, true);
+		Team game1Winner = farnsworth.predictGameReturnTeam(game1, makeMadness);
 		winners.add(game1Winner);
 		if (game1.isUpset()) {
 			firstRoundUpsets++;
 		}
 
 		Game game2 = new Game(bracketRegion.get(7), bracketRegion.get(8));
-		Team game2Winner = farnsworth.predictGameReturnTeam(game2, true);
+		Team game2Winner = farnsworth.predictGameReturnTeam(game2, makeMadness);
 		winners.add(game2Winner);
 		if (game2.isUpset()) {
 			firstRoundUpsets++;
 		}
 
 		Game game3 = new Game(bracketRegion.get(4), bracketRegion.get(11));
-		Team game3Winner = farnsworth.predictGameReturnTeam(game3, true);
+		Team game3Winner = farnsworth.predictGameReturnTeam(game3, makeMadness);
 		winners.add(game3Winner);
 		if (game3.isUpset()) {
 			firstRoundUpsets++;
 		}
 
 		Game game4 = new Game(bracketRegion.get(3), bracketRegion.get(12));
-		Team game4Winner = farnsworth.predictGameReturnTeam(game4, true);
+		Team game4Winner = farnsworth.predictGameReturnTeam(game4, makeMadness);
 		winners.add(game4Winner);
 		if (game4.isUpset()) {
 			firstRoundUpsets++;
 		}
 
 		Game game5 = new Game(bracketRegion.get(5), bracketRegion.get(10));
-		Team game5Winner = farnsworth.predictGameReturnTeam(game5, true);
+		Team game5Winner = farnsworth.predictGameReturnTeam(game5, makeMadness);
 		winners.add(game5Winner);
 		if (game5.isUpset()) {
 			firstRoundUpsets++;
 		}
 
 		Game game6 = new Game(bracketRegion.get(2), bracketRegion.get(13));
-		Team game6Winner = farnsworth.predictGameReturnTeam(game6, true);
+		Team game6Winner = farnsworth.predictGameReturnTeam(game6, makeMadness);
 		winners.add(game6Winner);
 		if (game6.isUpset()) {
 			firstRoundUpsets++;
 		}
 
 		Game game7 = new Game(bracketRegion.get(6), bracketRegion.get(9));
-		Team game7Winner = farnsworth.predictGameReturnTeam(game7, true);
+		Team game7Winner = farnsworth.predictGameReturnTeam(game7, makeMadness);
 		winners.add(game7Winner);
 		if (game7.isUpset()) {
 			firstRoundUpsets++;
 		}
 
 		Game game8 = new Game(bracketRegion.get(1), bracketRegion.get(14));
-		Team game8Winner = farnsworth.predictGameReturnTeam(game8, true);
+		Team game8Winner = farnsworth.predictGameReturnTeam(game8, makeMadness);
 		winners.add(game8Winner);
 		if (game8.isUpset()) {
 			firstRoundUpsets++;
@@ -205,19 +206,19 @@ public class PredictMarchMadness {
 		System.out.println("round2");
 		System.out.println("--------------");
 		Game game9 = new Game(game1Winner, game2Winner);
-		Team game9Winner = farnsworth.predictGameReturnTeam(game9, true);
+		Team game9Winner = farnsworth.predictGameReturnTeam(game9, makeMadness);
 		winners.add(game9Winner);
 
 		Game game10 = new Game(game3Winner, game4Winner);
-		Team game10Winner = farnsworth.predictGameReturnTeam(game10, true);
+		Team game10Winner = farnsworth.predictGameReturnTeam(game10, makeMadness);
 		winners.add(game10Winner);
 
 		Game game11 = new Game(game5Winner, game6Winner);
-		Team game11Winner = farnsworth.predictGameReturnTeam(game11, true);
+		Team game11Winner = farnsworth.predictGameReturnTeam(game11, makeMadness);
 		winners.add(game11Winner);
 
 		Game game12 = new Game(game7Winner, game8Winner);
-		Team game12Winner = farnsworth.predictGameReturnTeam(game12, true);
+		Team game12Winner = farnsworth.predictGameReturnTeam(game12, makeMadness);
 		winners.add(game12Winner);
 
 		// round 3
@@ -225,11 +226,11 @@ public class PredictMarchMadness {
 		System.out.println("round3");
 		System.out.println("--------------");
 		Game game13 = new Game(game9Winner, game10Winner);
-		Team game13Winner = farnsworth.predictGameReturnTeam(game13, true);
+		Team game13Winner = farnsworth.predictGameReturnTeam(game13, makeMadness);
 		winners.add(game13Winner);
 
 		Game game14 = new Game(game11Winner, game12Winner);
-		Team game14Winner = farnsworth.predictGameReturnTeam(game14, true);
+		Team game14Winner = farnsworth.predictGameReturnTeam(game14, makeMadness);
 		winners.add(game14Winner);
 
 		// round 4
@@ -237,7 +238,7 @@ public class PredictMarchMadness {
 		System.out.println("round4");
 		System.out.println("--------------");
 		Game game15 = new Game(game13Winner, game14Winner);
-		Team game15Winner = farnsworth.predictGameReturnTeam(game15, true);
+		Team game15Winner = farnsworth.predictGameReturnTeam(game15, makeMadness);
 		winners.add(game15Winner);
 
 		// get winners

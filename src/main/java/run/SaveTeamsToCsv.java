@@ -37,7 +37,7 @@ public class SaveTeamsToCsv {
 		}
 
 		// set correct directory as output
-		File csvOutputFile = new File("C:/Users/jorda/Documents/TeamsToPlayTest.csv");
+		File csvOutputFile = new File("C:/Users/jorda/Documents/TeamsToPlay.csv");
 
 		CsvMapper mapper = new CsvMapper();
 		mapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, false);
